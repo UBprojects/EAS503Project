@@ -67,19 +67,25 @@ def create_db_schema():
                         FOREIGN KEY (designation_id) REFERENCES designation (id),
                         FOREIGN KEY (department_id) REFERENCES department (id)
                     );"""
-    index_person_full_name = """CREATE INDEX IF NOT EXISTS idx_full_name ON Person (first_name, last_name);"""
-    index_person_financials = """CREATE INDEX IF NOT EXISTS idx_financials ON Person (base_annualized_salary, 
+
+    create_indexes = """CREATE INDEX IF NOT EXISTS idx_authority ON Authority (title);"""
+    create_indexes += """CREATE INDEX IF NOT EXISTS idx_designation ON Designation (title);"""
+    create_indexes += """CREATE INDEX IF NOT EXISTS idx_department ON Department (title);"""
+
+    create_indexes += """CREATE INDEX IF NOT EXISTS idx_full_name ON Person (first_name, last_name);"""
+    create_indexes += """CREATE INDEX IF NOT EXISTS idx_financials ON Person (base_annualized_salary, 
     actual_salary_paid, overtime_paid, performance_bonus, extra_pay, other_compensation, total_compensation);"""
-    index_person_financials2 = """CREATE INDEX IF NOT EXISTS idx_financials2 ON Person (pay_type, paid_by_another_entity, fiscal_year_end_date);"""
+    create_indexes += """CREATE INDEX IF NOT EXISTS idx_financials2 ON Person (pay_type, paid_by_another_entity, fiscal_year_end_date);"""
 
     conn = create_db_connection()
     execute_db_command(conn, authority)
     execute_db_command(conn, designation)
     execute_db_command(conn, department)
     execute_db_command(conn, person)
-    execute_db_command(conn, index_person_full_name)
-    execute_db_command(conn, index_person_financials)
-    execute_db_command(conn, index_person_financials2)
+
+    for index_query in create_indexes.split(";"):
+        execute_db_command(conn, '{0};'.format(index_query))
+
     conn.commit()
     return conn.close()
 
