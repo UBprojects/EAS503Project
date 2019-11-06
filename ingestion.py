@@ -8,8 +8,8 @@ from helpers import database as db_helper
 API_ENDPOINT = 'https://data.ny.gov/resource/unag-2p27.json'
 
 
-def get_data_from_api(endpoint, limit=1000):
-    endpoint += '?$limit={0}&$offset={0}'.format(limit)
+def get_data_from_api(endpoint, limit=1000, offset=1000):
+    endpoint += '?$limit={0}&$offset={1}'.format(limit, offset)
     resp = requests.get(endpoint)
     json_data = json.loads(resp.text)
     return json_data
@@ -74,15 +74,11 @@ def insert_person_record(db_conn, data, authority_id, department_id, designation
                                                                                      pay_type=data['pay_type'],
                                                                                      fiscal_year_end_date=fiscal_year_end_date)
         db_helper.execute_db_command(db_conn, insert_query)
-        db_conn.commit()
 
 
-def populate_data(endpoint=API_ENDPOINT, limit=1000, offset=1000, db_conn=None):
-    if not db_conn:
-        db_conn = db_helper.create_db_connection()
-
+def populate_data(db_conn, endpoint=API_ENDPOINT, limit=1000, offset=1000):
     print('Fetching data from #{0} until #{1}.'.format(limit, limit + offset))
-    json_data = get_data_from_api(endpoint=endpoint, limit=limit)
+    json_data = get_data_from_api(endpoint=endpoint, limit=limit, offset=offset)
     if json_data:
         for d in json_data:
             authority_id = get_foreign_id(db_conn, 'Authority', d['authority_name'])
@@ -90,11 +86,9 @@ def populate_data(endpoint=API_ENDPOINT, limit=1000, offset=1000, db_conn=None):
             department_id = get_foreign_id(db_conn, 'Department', d['group'])
 
             insert_person_record(db_conn, d, authority_id, department_id, designation_id)
-
-        populate_data(endpoint=endpoint, limit=limit + offset, db_conn=db_conn)
-
+        db_conn.commit()
+        populate_data(db_conn=db_conn, endpoint=endpoint, limit=limit + offset, offset=offset)
     print('Data parsing complete!')
-    db_conn.close()
 
 
 def populate_incremental_data():
@@ -104,3 +98,4 @@ def populate_incremental_data():
     if data:
         limit = data[0][0]
         populate_data(endpoint=API_ENDPOINT, limit=limit, db_conn=db_conn)
+    db_conn.close()
