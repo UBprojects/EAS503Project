@@ -81,6 +81,7 @@ def populate_data(endpoint=API_ENDPOINT, limit=1000, db_conn=None):
     if not db_conn:
         db_conn = db_helper.create_db_connection()
 
+    print('Fetching data from #{0} until #{1}.'.format(limit, limit + limit))
     json_data = get_data_from_api(endpoint=endpoint, limit=limit)
     if json_data:
         for d in json_data:
@@ -90,5 +91,7 @@ def populate_data(endpoint=API_ENDPOINT, limit=1000, db_conn=None):
 
             insert_person_record(db_conn, d, authority_id, department_id, designation_id)
 
-        populate_data(endpoint=endpoint, limit=limit + 1000, db_conn=db_conn)
+        populate_data(endpoint=endpoint, limit=limit + limit, db_conn=db_conn)
+
+    print('Data parsing complete!')
     db_conn.close()
