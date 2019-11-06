@@ -8,19 +8,20 @@ from helpers import database as db_helper
 API_ENDPOINT = 'https://data.ny.gov/resource/unag-2p27.json'
 
 
-def get_data_from_api(endpoint):
+def get_data_from_api(endpoint, limit=1000):
+    endpoint += '?$limit={0}&$offset={0}'.format(limit)
     resp = requests.get(endpoint)
     json_data = json.loads(resp.text)
     return json_data
 
 
 def get_foreign_id(db_conn, table_name, title):
-    query = """SELECT id FROM {1} WHERE title = '{0}';""".format(title, table_name)
+    query = """SELECT id FROM {1} WHERE title = "{0}";""".format(title, table_name)
     data = db_helper.fetch_data(db_conn, query)
     if data:
         return data[0][0]
     else:
-        insert_query = """INSERT INTO {1} (title) VALUES ('{0}');""".format(title, table_name)
+        insert_query = """INSERT INTO {1} (title) VALUES ("{0}");""".format(title, table_name)
         db_helper.execute_db_command(db_conn, insert_query)
         db_conn.commit()
         return get_foreign_id(db_conn, table_name, title)
@@ -76,13 +77,18 @@ def insert_person_record(db_conn, data, authority_id, department_id, designation
         db_conn.commit()
 
 
-def populate_data(endpoint=API_ENDPOINT):
-    json_data = get_data_from_api(endpoint=endpoint)
-    db_conn = db_helper.create_db_connection()
-    for d in json_data:
-        authority_id = get_foreign_id(db_conn, 'Authority', d['authority_name'])
-        designation_id = get_foreign_id(db_conn, 'Designation', d['title'])
-        department_id = get_foreign_id(db_conn, 'Department', d['group'])
+def populate_data(endpoint=API_ENDPOINT, limit=1000, db_conn=None):
+    if not db_conn:
+        db_conn = db_helper.create_db_connection()
 
-        insert_person_record(db_conn, d, authority_id, department_id, designation_id)
+    json_data = get_data_from_api(endpoint=endpoint, limit=limit)
+    if json_data:
+        for d in json_data:
+            authority_id = get_foreign_id(db_conn, 'Authority', d['authority_name'])
+            designation_id = get_foreign_id(db_conn, 'Designation', d['title'])
+            department_id = get_foreign_id(db_conn, 'Department', d['group'])
+
+            insert_person_record(db_conn, d, authority_id, department_id, designation_id)
+
+        populate_data(endpoint=endpoint, limit=limit + 1000, db_conn=db_conn)
     db_conn.close()
