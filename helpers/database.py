@@ -67,7 +67,7 @@ def create_db_schema():
                         FOREIGN KEY (designation_id) REFERENCES designation (id),
                         FOREIGN KEY (department_id) REFERENCES department (id)
                     );"""
-    index_person = """CREATE INDEX idx_full_name ON Person (first_name, last_name);"""
+    index_person = """CREATE INDEX IF NOT EXISTS idx_full_name ON Person (first_name, last_name);"""
 
     conn = create_db_connection()
     execute_db_command(conn, authority)
