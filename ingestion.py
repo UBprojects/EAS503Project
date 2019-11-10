@@ -50,7 +50,6 @@ def insert_person_record(db_conn, data, authority_id, department_id, designation
             fiscal_year_end_date = datetime.strptime(data['fiscal_year_end_date'], '%Y-%m-%dT%H:%M:%S.%f')
             fiscal_year_end_date = fiscal_year_end_date.strftime('%Y-%m-%d %H:%M:%S')
 
-        paid_by_another_entity = data['paid_by_another_entity'] if 'paid_by_another_entity' in data else None
         total_compensation = data['total_compensation'] if 'total_compensation' in data else None
         other_compensation = data['other_compensation'] if 'other_compensation' in data else None
         extra_pay = data['extra_pay'] if 'extra_pay' in data else None
@@ -58,8 +57,17 @@ def insert_person_record(db_conn, data, authority_id, department_id, designation
         overtime_paid = data['overtime_paid'] if 'overtime_paid' in data else None
         actual_salary_paid = data['actual_salary_paid'] if 'actual_salary_paid' in data else None
         base_annualized_salary = data['base_annualized_salary'] if 'base_annualized_salary' in data else None
-        exempt_indicator = data['exempt_indicator'] if 'exempt_indicator' in data else None
         pay_type = data['pay_type'] if 'pay_type' in data else None
+        paid_by_another_entity = data['paid_by_another_entity'] if 'paid_by_another_entity' in data else None
+        if paid_by_another_entity == "Y":
+            paid_by_another_entity = 1
+        else:
+            paid_by_another_entity = 0
+        exempt_indicator = data['exempt_indicator'] if 'exempt_indicator' in data else None
+        if exempt_indicator == "Y":
+            exempt_indicator = 1
+        else:
+            exempt_indicator = 0
 
         insert_query = """INSERT INTO Person (first_name, last_name, authority_id, department_id, designation_id,
             paid_by_another_entity, total_compensation, other_compensation, extra_pay, performance_bonus, overtime_paid,
@@ -107,5 +115,7 @@ def populate_incremental_data():
     data = db_helper.fetch_data(db_conn, query)
     if data:
         limit = data[0][0]
+        if not limit:
+            limit = 1
         populate_data(endpoint=API_ENDPOINT, limit=limit, db_conn=db_conn)
     db_conn.close()
