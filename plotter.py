@@ -62,8 +62,8 @@ def plot_department_public_private_pay(limit=10):
     x_axis, ymax_axis, ymin_axis = list(), list(), list()
     for d in data:
         x_axis.append(d[0])
-        ymax_axis.append(d[1])
-        ymin_axis.append(d[2])
+        ymax_axis.append(d[1] if d[1] else 0)
+        ymin_axis.append(d[2] if d[2] else 0)
 
     fig, ax1 = plt.subplots()
     ax2 = ax1.twinx()
