@@ -63,3 +63,23 @@ def department_pays_private_or_public(limit=10):
     data = db_helper.fetch_data(db_conn, query)
     db_conn.close()
     return data
+
+
+def department_employees_full_part_time(limit=10):
+    query = """SELECT
+                    d.title,
+                    CASE WHEN pay_type='FT' THEN COUNT(p.id) END AS full_time,
+                    CASE WHEN pay_type='PT' THEN COUNT(p.id) END AS part_time
+                FROM
+                    Person p
+                    JOIN Department d ON d.id = p.department_id
+                GROUP BY
+                    d.title
+                ORDER BY
+                    d.title
+                LIMIT {limit};""".format(limit=limit)
+
+    db_conn = db_helper.create_db_connection()
+    data = db_helper.fetch_data(db_conn, query)
+    db_conn.close()
+    return data

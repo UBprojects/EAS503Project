@@ -82,3 +82,30 @@ def plot_department_public_private_pay(limit=10):
 
     # function to show the plot
     plt.show()
+
+
+def plot_department_part_full_time(limit=10):
+    data = analyze.department_employees_full_part_time(limit=limit)
+    x_axis, ymax_axis, ymin_axis = list(), list(), list()
+    for d in data:
+        x_axis.append(d[0])
+        ymax_axis.append(d[1] if d[1] else 0)
+        ymin_axis.append(d[2] if d[2] else 0)
+
+    fig, ax1 = plt.subplots()
+    ax2 = ax1.twinx()
+
+    # plotting the points
+    ax1.plot(x_axis, ymax_axis, 'g-')
+    ax2.plot(x_axis, ymin_axis, 'b-')
+
+    # naming the x axis
+    ax1.set_xlabel('Department employees - Full/Part time')
+    ax1.set_ylabel('Full time', color='g')
+    ax2.set_ylabel('Part time', color='b')
+
+    # giving a title to my graph
+    plt.title('Department employees - Full/Part time')
+
+    # function to show the plot
+    plt.show()
