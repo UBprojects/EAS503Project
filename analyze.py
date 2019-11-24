@@ -43,3 +43,23 @@ def designation_pays_most_and_least(limit=10):
     data = db_helper.fetch_data(db_conn, query)
     db_conn.close()
     return data
+
+
+def department_pays_private_or_public(limit=10):
+    query = """SELECT
+                    d.title AS max_department,
+                    CASE WHEN paid_by_another_entity=0 THEN COUNT(p.id) END AS private_pay,
+                    CASE WHEN paid_by_another_entity=1 THEN COUNT(p.id) END AS public_pay
+                FROM
+                    Person p
+                    JOIN Department d ON d.id = p.department_id
+                GROUP BY
+                    d.title
+                ORDER BY
+                    d.title
+                LIMIT {limit};""".format(limit=limit)
+
+    db_conn = db_helper.create_db_connection()
+    data = db_helper.fetch_data(db_conn, query)
+    db_conn.close()
+    return data
