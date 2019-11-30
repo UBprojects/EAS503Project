@@ -83,3 +83,21 @@ def department_employees_full_part_time(limit=10):
     data = db_helper.fetch_data(db_conn, query)
     db_conn.close()
     return data
+
+
+def designation_avg_salary(limit=10):
+    query = """SELECT
+                    d.title, (AVG(base_annualized_salary)) as avg_salary
+                FROM
+                    Person p
+                    JOIN Designation d ON d.id = p.department_id
+                GROUP BY
+                    d.title
+                ORDER BY
+                    avg_salary DESC
+                LIMIT {limit};""".format(limit=limit)
+
+    db_conn = db_helper.create_db_connection()
+    data = db_helper.fetch_data(db_conn, query)
+    db_conn.close()
+    return data
