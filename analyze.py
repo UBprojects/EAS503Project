@@ -68,8 +68,8 @@ def department_pays_private_or_public(limit=10):
 def department_employees_full_part_time(limit=10):
     query = """SELECT
                     d.title,
-                    CASE WHEN pay_type='FT' THEN COUNT(p.id) END AS full_time,
-                    CASE WHEN pay_type='PT' THEN COUNT(p.id) END AS part_time
+                    SUM(case when pay_type='FT' then 1 else 0 END) as full_time,
+                    SUM(case when pay_type='PT' then 1 else 0 END) as part_time
                 FROM
                     Person p
                     JOIN Department d ON d.id = p.department_id
