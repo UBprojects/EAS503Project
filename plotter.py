@@ -147,3 +147,32 @@ def plot_designation_avg_salary(limit=10):
 
     plt.tight_layout()
     plt.show()
+
+
+def plot_department_avg_salary(limit=10):
+    data = analyze.department_avg_salary(limit=limit)
+
+    x_axis, y_axis = list(), list()
+    for d in data:
+        x_axis.append(d[0])
+        y_axis.append(d[1] if d[1] else 0)
+
+    n_groups = len(x_axis)
+    plt.subplots()
+    index = np.arange(n_groups)
+    bar_width = 0.35
+    opacity = 0.8
+
+    plt.bar(index, y_axis, bar_width,
+            alpha=opacity,
+            color='r',
+            label='Average Salary')
+
+    plt.xlabel('Departments')
+    plt.ylabel('Salary amount')
+    plt.title('Average salary for departments')
+    plt.xticks(index + bar_width, x_axis)
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show()
