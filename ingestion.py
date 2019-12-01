@@ -118,8 +118,6 @@ def populate_data_to_file(db_conn, endpoint=API_ENDPOINT, limit=1000, offset=100
         with open(filename, 'w+') as f:
             f.write(json.dumps(json_data))
             f.close()
-
-        populate_data(db_conn=db_conn, endpoint=endpoint, limit=limit + offset, offset=offset)
     print('Data parsing complete!')
 
 
