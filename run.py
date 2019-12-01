@@ -6,4 +6,5 @@ db_helper.create_db_schema()
 # while True:
 #     ingestion.populate_incremental_data(offset=10000)
 
-ingestion.parse_json_files()
+# ingestion.parse_json_files()
+ingestion.parse_csv_file()

@@ -1,3 +1,4 @@
+import csv
 import json
 import os
 import time as tm
@@ -94,6 +95,7 @@ def insert_person_record(db_conn, data, authority_id, department_id, designation
                                                                                      pay_type=pay_type,
                                                                                      fiscal_year_end_date=fiscal_year_end_date)
         db_helper.execute_db_command(db_conn, insert_query)
+        db_conn.commit()
 
 
 def populate_data(db_conn, endpoint=API_ENDPOINT, limit=1000, offset=1000):
@@ -106,7 +108,6 @@ def populate_data(db_conn, endpoint=API_ENDPOINT, limit=1000, offset=1000):
             department_id = get_foreign_id(db_conn, 'Department', d['group']) if 'group' in d else None
 
             insert_person_record(db_conn, d, authority_id, department_id, designation_id)
-        db_conn.commit()
         populate_data(db_conn=db_conn, endpoint=endpoint, limit=limit + offset, offset=offset)
     print('Data parsing complete!')
 
@@ -152,8 +153,40 @@ def parse_json_files():
                     department_id = get_foreign_id(db_conn, 'Department', d['group']) if 'group' in d else None
 
                     insert_person_record(db_conn, d, authority_id, department_id, designation_id)
-                db_conn.commit()
         f.close()
         os.remove(file_path)
         db_conn.close()
+    print('Data parsing complete!')
+
+
+def parse_csv_file(file_name='datafile.csv'):
+    db_conn = db_helper.create_db_connection()
+    with open(file_name, "r", encoding='utf-8') as f:
+        reader = csv.reader(f, delimiter=",")
+        for i, line in enumerate(reader):
+            if i > 0:
+                d = {'authority_name': line[0].replace('"', ''),
+                     'title': line[6].replace('"', ''),
+                     'group': line[7].replace('"', ''),
+                     'first_name': line[5].replace('"', ''),
+                     'last_name': line[3].replace('"', ''),
+                     'fiscal_year_end_date': line[1].replace('"', ''),
+                     'total_compensation': float(line[17].replace(',', '')),
+                     'other_compensation': float(line[16].replace(',', '')),
+                     'extra_pay': float(line[15].replace(',', '')),
+                     'performance_bonus': float(line[14].replace(',', '')),
+                     'overtime_paid': float(line[13].replace(',', '')),
+                     'actual_salary_paid': float(line[12].replace(',', '')),
+                     'base_annualized_salary': float(line[11].replace(',', '')),
+                     'pay_type': line[9].replace('"', ''),
+                     'paid_by_another_entity': line[18].replace('"', ''),
+                     'exempt_indicator': line[10].replace('"', '')}
+
+                authority_id = get_foreign_id(db_conn, 'Authority',
+                                              d['authority_name']) if 'authority_name' in d else None
+                designation_id = get_foreign_id(db_conn, 'Designation', d['title']) if 'title' in d else None
+                department_id = get_foreign_id(db_conn, 'Department', d['group']) if 'group' in d else None
+
+                insert_person_record(db_conn, d, authority_id, department_id, designation_id)
+    db_conn.close()
     print('Data parsing complete!')
