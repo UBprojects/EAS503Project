@@ -50,7 +50,10 @@ def insert_person_record(db_conn, data, authority_id, department_id, designation
     if not person_data:
         fiscal_year_end_date = None
         if data['fiscal_year_end_date']:
-            fiscal_year_end_date = datetime.strptime(data['fiscal_year_end_date'], '%Y-%m-%dT%H:%M:%S.%f')
+            try:
+                fiscal_year_end_date = datetime.strptime(data['fiscal_year_end_date'], '%Y-%m-%dT%H:%M:%S.%f')
+            except:
+                fiscal_year_end_date = datetime.strptime(data['fiscal_year_end_date'], '%m/%d/%Y')
             fiscal_year_end_date = fiscal_year_end_date.strftime('%Y-%m-%d %H:%M:%S')
 
         total_compensation = data['total_compensation'] if 'total_compensation' in data else None
