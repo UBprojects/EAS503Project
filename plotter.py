@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 import analyze
 
@@ -217,3 +218,34 @@ def plot_department_employee_count_over_years(limit=10):
 
     plt.tight_layout()
     plt.show()
+
+
+def plot_department_avg_salary_trend(limit=10):
+    data = analyze.department_avg_salary_trend(limit=limit)
+
+    data_dict = {'x': [i for i in range(2011, 2018 + 1)]}
+    for d in data:
+        data_dict.update({d[0]: [d[i] for i in range(1, len(d))]})
+
+    # Make a data frame
+    df = pd.DataFrame(data_dict)
+
+    # style
+    plt.style.use('seaborn-darkgrid')
+
+    # create a color palette
+    palette = plt.get_cmap('Set1')
+
+    # multiple line plot
+    num = 0
+    for column in df.drop('x', axis=1):
+        num += 1
+        plt.plot(df['x'], df[column], marker='', color=palette(num), linewidth=1, alpha=0.9, label=column)
+
+    # Add legend
+    plt.legend(loc=2, ncol=2)
+
+    # Add titles
+    plt.title("Department average salary over the years", loc='left', fontsize=12, fontweight=0, color='orange')
+    plt.xlabel("Year")
+    plt.ylabel("Average salary")

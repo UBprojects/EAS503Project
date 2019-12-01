@@ -140,3 +140,29 @@ def department_employee_count_over_years(limit=10):
     data = db_helper.fetch_data(db_conn, query)
     db_conn.close()
     return data
+
+
+def department_avg_salary_trend(limit=10):
+    query = """SELECT
+                d.title, 
+                AVG(case when strftime('%Y', fiscal_year_end_date) = '2011' then base_annualized_salary else NULL end) as year_2011,
+                AVG(case when strftime('%Y', fiscal_year_end_date) = '2012' then base_annualized_salary else NULL end) as year_2012,
+                AVG(case when strftime('%Y', fiscal_year_end_date) = '2013' then base_annualized_salary else NULL end) as year_2013,
+                AVG(case when strftime('%Y', fiscal_year_end_date) = '2014' then base_annualized_salary else NULL end) as year_2014,
+                AVG(case when strftime('%Y', fiscal_year_end_date) = '2015' then base_annualized_salary else NULL end) as year_2015,
+                AVG(case when strftime('%Y', fiscal_year_end_date) = '2016' then base_annualized_salary else NULL end) as year_2016,
+                AVG(case when strftime('%Y', fiscal_year_end_date) = '2017' then base_annualized_salary else NULL end) as year_2017,
+                AVG(case when strftime('%Y', fiscal_year_end_date) = '2018' then base_annualized_salary else NULL end) as year_2018
+            FROM
+                Person p
+                JOIN Department d ON d.id = p.department_id
+            GROUP BY
+                d.title
+            ORDER BY
+                d.title
+            LIMIT {limit};""".format(limit=limit)
+
+    db_conn = db_helper.create_db_connection()
+    data = db_helper.fetch_data(db_conn, query)
+    db_conn.close()
+    return data
