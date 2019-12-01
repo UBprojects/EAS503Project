@@ -1,4 +1,5 @@
 import json
+import time as tm
 from datetime import datetime
 
 import requests
@@ -109,6 +110,19 @@ def populate_data(db_conn, endpoint=API_ENDPOINT, limit=1000, offset=1000):
     print('Data parsing complete!')
 
 
+def populate_data_to_file(db_conn, endpoint=API_ENDPOINT, limit=1000, offset=1000):
+    print('Fetching data from #{0} until #{1}.'.format(limit, limit + offset))
+    json_data = get_data_from_api(endpoint=endpoint, limit=limit, offset=offset)
+    if json_data:
+        filename = 'data/{0}.json'.format(int(tm.time()))
+        with open(filename, 'w+') as f:
+            f.write(json.dumps(json_data))
+            f.close()
+
+        populate_data(db_conn=db_conn, endpoint=endpoint, limit=limit + offset, offset=offset)
+    print('Data parsing complete!')
+
+
 def populate_incremental_data():
     query = """SELECT COUNT(id) FROM Person;"""
     db_conn = db_helper.create_db_connection()
@@ -117,5 +131,6 @@ def populate_incremental_data():
         limit = data[0][0]
         if not limit:
             limit = 1
-        populate_data(endpoint=API_ENDPOINT, limit=limit, db_conn=db_conn)
+        # populate_data(endpoint=API_ENDPOINT, limit=limit, db_conn=db_conn)
+        populate_data_to_file(endpoint=API_ENDPOINT, limit=limit, db_conn=db_conn)
     db_conn.close()
