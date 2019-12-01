@@ -112,7 +112,7 @@ def department_avg_salary(limit=10):
                 GROUP BY
                     d.title
                 ORDER BY
-                    avg_salary DESC
+                    d.title
                 LIMIT {limit};""".format(limit=limit)
 
     db_conn = db_helper.create_db_connection()
