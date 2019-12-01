@@ -38,26 +38,33 @@ def plot_designation_pay(limit=10):
     data = analyze.designation_pays_most_and_least(limit=limit)
     x_axis, ymax_axis, ymin_axis = list(), list(), list()
     for d in data:
-        x_axis.append(d[0])
+        x_axis.append(d[0].title())
         ymax_axis.append(d[1])
         ymin_axis.append(d[2])
 
-    fig, ax1 = plt.subplots(figsize=PLOT_FIGSIZE)
-    ax2 = ax1.twinx()
+    n_groups = len(x_axis)
+    plt.subplots(figsize=PLOT_FIGSIZE)
+    index = np.arange(n_groups)
+    bar_width = 0.35
+    opacity = 0.8
 
-    # plotting the points
-    ax1.plot(x_axis, ymax_axis, 'g-')
-    ax2.plot(x_axis, ymin_axis, 'b-')
+    plt.bar(index, ymax_axis, bar_width,
+            alpha=opacity,
+            color='g',
+            label='Max. Amount ($)')
 
-    # naming the x axis
-    ax1.set_xlabel('Designations')
-    ax1.set_ylabel('Max. Amount ($)', color='g')
-    ax2.set_ylabel('Min. Amount ($)', color='b')
+    plt.bar(index + bar_width, ymin_axis, bar_width,
+            alpha=opacity,
+            color='b',
+            label='Min. Amount ($)')
 
-    # giving a title to my graph
-    plt.title('Designation Pay - Most & Least')
+    plt.xlabel('Authorities')
+    plt.ylabel('Salary amount')
+    plt.title('Authorities salary - Most & Least')
+    plt.xticks(index + bar_width, x_axis)
+    plt.legend()
 
-    # function to show the plot
+    plt.tight_layout()
     plt.show()
 
 
@@ -142,9 +149,9 @@ def plot_designation_avg_salary(limit=10):
             color='r',
             label='Average Salary')
 
-    plt.xlabel('Designations')
+    plt.xlabel('Authorities')
     plt.ylabel('Salary amount')
-    plt.title('Average salary for designations')
+    plt.title('Average salary for authorities')
     plt.xticks(index + bar_width, x_axis)
     plt.legend()
 
