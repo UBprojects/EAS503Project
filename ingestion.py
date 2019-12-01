@@ -1,4 +1,5 @@
 import json
+import os
 import time as tm
 from datetime import datetime
 
@@ -130,5 +131,8 @@ def populate_incremental_data(offset=1000):
         if not limit:
             limit = 1
         # populate_data(endpoint=API_ENDPOINT, limit=limit, db_conn=db_conn)
+
+        dir_files = len(os.listdir('data'))
+        limit += dir_files * offset
         populate_data_to_file(endpoint=API_ENDPOINT, limit=limit, db_conn=db_conn, offset=offset)
     db_conn.close()
