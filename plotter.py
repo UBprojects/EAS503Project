@@ -4,6 +4,8 @@ import pandas as pd
 
 import analyze
 
+PLOT_FIGSIZE = (15, 10)
+
 
 def plot_department_pay(limit=10):
     data = analyze.department_pays_most_and_least(limit=limit)
@@ -13,7 +15,7 @@ def plot_department_pay(limit=10):
         ymax_axis.append(d[1])
         ymin_axis.append(d[2])
 
-    fig, ax1 = plt.subplots()
+    fig, ax1 = plt.subplots(figsize=PLOT_FIGSIZE)
     ax2 = ax1.twinx()
 
     # plotting the points
@@ -40,7 +42,7 @@ def plot_designation_pay(limit=10):
         ymax_axis.append(d[1])
         ymin_axis.append(d[2])
 
-    fig, ax1 = plt.subplots()
+    fig, ax1 = plt.subplots(figsize=PLOT_FIGSIZE)
     ax2 = ax1.twinx()
 
     # plotting the points
@@ -67,7 +69,7 @@ def plot_department_public_private_pay(limit=10):
         ymax_axis.append(d[1] if d[1] else 0)
         ymin_axis.append(d[2] if d[2] else 0)
 
-    fig, ax1 = plt.subplots()
+    fig, ax1 = plt.subplots(figsize=PLOT_FIGSIZE)
     ax2 = ax1.twinx()
 
     # plotting the points
@@ -96,7 +98,7 @@ def plot_department_part_full_time(limit=10):
         ymin_axis.append(d[2] if d[2] else 0)
 
     n_groups = len(x_axis)
-    plt.subplots()
+    plt.subplots(figsize=PLOT_FIGSIZE)
     index = np.arange(n_groups)
     bar_width = 0.35
     opacity = 0.8
@@ -130,7 +132,7 @@ def plot_designation_avg_salary(limit=10):
         y_axis.append(d[1] if d[1] else 0)
 
     n_groups = len(x_axis)
-    plt.subplots()
+    plt.subplots(figsize=PLOT_FIGSIZE)
     index = np.arange(n_groups)
     bar_width = 0.35
     opacity = 0.8
@@ -159,7 +161,7 @@ def plot_department_avg_salary(limit=10):
         y_axis.append(d[1] if d[1] else 0)
 
     n_groups = len(x_axis)
-    plt.subplots()
+    plt.subplots(figsize=PLOT_FIGSIZE)
     index = np.arange(n_groups)
     bar_width = 0.35
     opacity = 0.8
@@ -190,7 +192,7 @@ def plot_department_employee_count_over_years(limit=10):
         y_axis_2018.append(d[3] if d[3] else 0)
 
     n_groups = len(x_axis)
-    plt.subplots()
+    plt.subplots(figsize=PLOT_FIGSIZE)
     index = np.arange(n_groups)
     bar_width = 0.35
     opacity = 0.8
@@ -230,6 +232,9 @@ def plot_department_avg_salary_trend(limit=10):
     # Make a data frame
     df = pd.DataFrame(data_dict)
 
+    # Figure size
+    plt.figure(figsize=PLOT_FIGSIZE)
+
     # style
     plt.style.use('seaborn-darkgrid')
 
@@ -240,7 +245,7 @@ def plot_department_avg_salary_trend(limit=10):
     num = 0
     for column in df.drop('x', axis=1):
         num += 1
-        plt.plot(df['x'], df[column], marker='', color=palette(num), linewidth=1, alpha=0.9, label=column)
+        plt.plot(df['x'], df[column], marker='', color=palette(num), linewidth=2, alpha=0.9, label=column)
 
     # Add legend
     plt.legend(loc=2, ncol=2)
