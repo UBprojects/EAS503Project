@@ -124,6 +124,7 @@ def department_avg_salary(limit=10):
 def department_employee_count_over_years(limit=10):
     query = """SELECT
                     d.title, 
+                    sum(case when strftime('%Y', fiscal_year_end_date) = '2016' then 1 else 0 end) as year_2016,
                     sum(case when strftime('%Y', fiscal_year_end_date) = '2017' then 1 else 0 end) as year_2017,
                     sum(case when strftime('%Y', fiscal_year_end_date) = '2018' then 1 else 0 end) as year_2018
                 FROM
@@ -132,7 +133,7 @@ def department_employee_count_over_years(limit=10):
                 GROUP BY
                     d.title
                 ORDER BY
-                    year_2017 DESC, year_2018 DESC
+                    year_2016 DESC, year_2017 DESC, year_2018 DESC
                 LIMIT {limit};""".format(limit=limit)
 
     db_conn = db_helper.create_db_connection()
