@@ -123,7 +123,7 @@ def populate_data_to_file(db_conn, endpoint=API_ENDPOINT, limit=1000, offset=100
     print('Data parsing complete!')
 
 
-def populate_incremental_data():
+def populate_incremental_data(offset=1000):
     query = """SELECT COUNT(id) FROM Person;"""
     db_conn = db_helper.create_db_connection()
     data = db_helper.fetch_data(db_conn, query)
@@ -132,5 +132,5 @@ def populate_incremental_data():
         if not limit:
             limit = 1
         # populate_data(endpoint=API_ENDPOINT, limit=limit, db_conn=db_conn)
-        populate_data_to_file(endpoint=API_ENDPOINT, limit=limit, db_conn=db_conn)
+        populate_data_to_file(endpoint=API_ENDPOINT, limit=limit, db_conn=db_conn, offset=offset)
     db_conn.close()
