@@ -136,3 +136,24 @@ def populate_incremental_data(offset=1000):
         limit += dir_files * offset
         populate_data_to_file(endpoint=API_ENDPOINT, limit=limit, db_conn=db_conn, offset=offset)
     db_conn.close()
+
+
+def parse_json_files():
+    for d in os.listdir('data'):
+        db_conn = db_helper.create_db_connection()
+        file_path = 'data/{0}'.format(d)
+        with open(file_path, 'r+') as f:
+            json_data = json.loads(f.read())
+            if json_data:
+                for d in json_data:
+                    authority_id = get_foreign_id(db_conn, 'Authority',
+                                                  d['authority_name']) if 'authority_name' in d else None
+                    designation_id = get_foreign_id(db_conn, 'Designation', d['title']) if 'title' in d else None
+                    department_id = get_foreign_id(db_conn, 'Department', d['group']) if 'group' in d else None
+
+                    insert_person_record(db_conn, d, authority_id, department_id, designation_id)
+                db_conn.commit()
+        f.close()
+        os.remove(file_path)
+        db_conn.close()
+    print('Data parsing complete!')
