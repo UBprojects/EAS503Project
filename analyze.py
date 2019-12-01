@@ -90,7 +90,7 @@ def designation_avg_salary(limit=10):
                     d.title, (AVG(base_annualized_salary)) as avg_salary
                 FROM
                     Person p
-                    JOIN Designation d ON d.id = p.department_id
+                    JOIN Designation d ON d.id = p.designation_id
                 GROUP BY
                     d.title
                 ORDER BY
