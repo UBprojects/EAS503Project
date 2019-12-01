@@ -176,3 +176,38 @@ def plot_department_avg_salary(limit=10):
 
     plt.tight_layout()
     plt.show()
+
+
+def plot_department_employee_count_over_years(limit=10):
+    data = analyze.department_employee_count_over_years(limit=limit)
+
+    x_axis, ymax_axis, ymin_axis = list(), list(), list()
+    for d in data:
+        x_axis.append(d[0])
+        ymax_axis.append(d[1] if d[1] else 0)
+        ymin_axis.append(d[2] if d[2] else 0)
+
+    n_groups = len(x_axis)
+    plt.subplots()
+    index = np.arange(n_groups)
+    bar_width = 0.35
+    opacity = 0.8
+
+    plt.bar(index, ymax_axis, bar_width,
+            alpha=opacity,
+            color='b',
+            label='2017')
+
+    plt.bar(index + bar_width, ymin_axis, bar_width,
+            alpha=opacity,
+            color='g',
+            label='2018')
+
+    plt.xlabel('Year')
+    plt.ylabel('# of employees')
+    plt.title('# of employees in department over the years')
+    plt.xticks(index + bar_width, x_axis)
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show()
