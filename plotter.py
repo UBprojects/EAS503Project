@@ -312,3 +312,39 @@ def plot_department_avg_salary_trend(limit=10):
     plt.title("Department average salary over the years", loc='left', fontsize=12, fontweight=0, color='orange')
     plt.xlabel("Year")
     plt.ylabel("Average salary")
+
+
+def plot_department_employees_pie_chart(limit=10):
+    data = analyze.department_num_employees(limit=limit)
+
+    x_axis, y_axis = list(), list()
+    for d in data:
+        x_axis.append(d[0])
+        y_axis.append(d[1] if d[1] else 0)
+
+    # Pie chart
+    fig1, ax1 = plt.subplots(figsize=PLOT_FIGSIZE)
+    ax1.pie(y_axis, labels=x_axis, autopct='%1.1f%%', shadow=True, startangle=90)
+
+    # Equal aspect ratio ensures that pie is drawn as a circle
+    ax1.axis('equal')
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_designation_employees_pie_chart(limit=10):
+    data = analyze.designation_num_employees(limit=limit)
+
+    x_axis, y_axis = list(), list()
+    for d in data:
+        x_axis.append(d[0])
+        y_axis.append(d[1] if d[1] else 0)
+
+    # Pie chart
+    fig1, ax1 = plt.subplots(figsize=PLOT_FIGSIZE)
+    ax1.pie(y_axis, labels=x_axis, autopct='%1.1f%%', shadow=True, startangle=90)
+
+    # Equal aspect ratio ensures that pie is drawn as a circle
+    ax1.axis('equal')
+    plt.tight_layout()
+    plt.show()

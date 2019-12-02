@@ -187,3 +187,39 @@ def department_avg_salary_trend(limit=10):
     data = db_helper.fetch_data(db_conn, query)
     db_conn.close()
     return data
+
+
+def designation_num_employees(limit=10):
+    query = """SELECT
+                    d.title, COUNT(p.id) as num_employees
+                FROM
+                    Person p
+                    JOIN Designation d ON d.id = p.designation_id
+                GROUP BY
+                    d.title
+                ORDER BY
+                    num_employees DESC
+                LIMIT {limit};""".format(limit=limit)
+
+    db_conn = db_helper.create_db_connection()
+    data = db_helper.fetch_data(db_conn, query)
+    db_conn.close()
+    return data
+
+
+def department_num_employees(limit=10):
+    query = """SELECT
+                    d.title, COUNT(p.id) as num_employees
+                FROM
+                    Person p
+                    JOIN Department d ON d.id = p.department_id
+                GROUP BY
+                    d.title
+                ORDER BY
+                    num_employees DESC
+                LIMIT {limit};""".format(limit=limit)
+
+    db_conn = db_helper.create_db_connection()
+    data = db_helper.fetch_data(db_conn, query)
+    db_conn.close()
+    return data
