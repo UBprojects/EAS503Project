@@ -326,3 +326,17 @@ def authority_total_employees(limit=10, year=2108, sort_by='ASC'):
     data = db_helper.fetch_data(db_conn, query)
     db_conn.close()
     return data
+
+
+def get_all_data():
+    query = """select first_name "First Name", last_name "Last Name", fiscal_year_end_date "Fiscal Year End Date", base_annualized_salary "Base Annualized Salary",
+                a.title "Authority Name", ds.title "Title", dp.title "Group"
+                from Person p
+                join Authority a on a.id = p.authority_id
+                join Designation ds on ds.id = p.designation_id
+                join Department dp on dp.id = p.department_id;"""
+
+    db_conn = db_helper.create_db_connection()
+    data = db_helper.fetch_data(db_conn, query)
+    db_conn.close()
+    return data
