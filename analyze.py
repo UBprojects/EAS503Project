@@ -23,6 +23,28 @@ def department_pays_most_and_least(limit=10):
     return data
 
 
+def authority_pays_most_and_least(limit=10):
+    query = """SELECT
+                    lower(a.title) AS authority,
+                    MAX(base_annualized_salary) AS max_pay,
+                    MIN(base_annualized_salary) AS min_pay
+                FROM
+                    Person p
+                    JOIN Authority a ON a.id = p.authority_id
+                WHERE
+                    base_annualized_salary >= 1
+                GROUP BY
+                    a.id HAVING max_pay!=min_pay
+                ORDER BY
+                    max_pay DESC
+                LIMIT {limit};""".format(limit=limit)
+
+    db_conn = db_helper.create_db_connection()
+    data = db_helper.fetch_data(db_conn, query)
+    db_conn.close()
+    return data
+
+
 def designation_pays_most_and_least(limit=10):
     query = """SELECT
                     lower(d.title) AS designation,
@@ -85,14 +107,14 @@ def department_employees_full_part_time(limit=10):
     return data
 
 
-def designation_avg_salary(limit=10):
+def authority_avg_salary(limit=10):
     query = """SELECT
-                    d.title, (AVG(base_annualized_salary)) as avg_salary
+                    a.title, (AVG(base_annualized_salary)) as avg_salary
                 FROM
                     Person p
-                    JOIN Designation d ON d.id = p.designation_id
+                    JOIN Authority a ON a.id = p.authority_id
                 GROUP BY
-                    d.title
+                    p.authority_id
                 ORDER BY
                     avg_salary DESC
                 LIMIT {limit};""".format(limit=limit)
@@ -142,17 +164,17 @@ def department_employee_count_over_years(limit=10):
     return data
 
 
-def designation_employee_count_over_years(limit=10):
+def authority_employee_count_over_years(limit=10):
     query = """SELECT
-                    d.title, 
+                    a.title, 
                     sum(case when strftime('%Y', fiscal_year_end_date) = '2016' then 1 else 0 end) as year_2016,
                     sum(case when strftime('%Y', fiscal_year_end_date) = '2017' then 1 else 0 end) as year_2017,
                     sum(case when strftime('%Y', fiscal_year_end_date) = '2018' then 1 else 0 end) as year_2018
                 FROM
                     Person p
-                    JOIN Designation d ON d.id = p.designation_id
+                    JOIN Authority a ON a.id = p.authority_id
                 GROUP BY
-                    d.title
+                    a.id
                 ORDER BY
                     year_2016 DESC, year_2017 DESC, year_2018 DESC
                 LIMIT {limit};""".format(limit=limit)

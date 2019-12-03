@@ -61,6 +61,41 @@ def plot_designation_pay(limit=10):
             color='b',
             label='Min. Amount ($)')
 
+    plt.xlabel('Designations')
+    plt.ylabel('Salary amount')
+    plt.title('Designations salary - Most & Least')
+    plt.xticks(index + bar_width, x_axis)
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_authority_pay(limit=10):
+    data = analyze.authority_pays_most_and_least(limit=limit)
+    x_axis, ymax_axis, ymin_axis = list(), list(), list()
+    for d in data:
+        x_axis.append(d[0].title())
+        ymax_axis.append(d[1])
+        ymin_axis.append(d[2])
+
+    n_groups = len(x_axis)
+    plt.subplots(figsize=PLOT_FIGSIZE)
+    plt.xticks(rotation=PLOT_ROTATION)
+    index = np.arange(n_groups)
+    bar_width = 0.35
+    opacity = 0.8
+
+    plt.bar(index, ymax_axis, bar_width,
+            alpha=opacity,
+            color='g',
+            label='Max. Amount ($)')
+
+    plt.bar(index + bar_width, ymin_axis, bar_width,
+            alpha=opacity,
+            color='b',
+            label='Min. Amount ($)')
+
     plt.xlabel('Authorities')
     plt.ylabel('Salary amount')
     plt.title('Authorities salary - Most & Least')
@@ -135,8 +170,8 @@ def plot_department_part_full_time(limit=10):
     plt.show()
 
 
-def plot_designation_avg_salary(limit=10):
-    data = analyze.designation_avg_salary(limit=limit)
+def plot_authority_avg_salary(limit=10):
+    data = analyze.authority_avg_salary(limit=limit)
 
     x_axis, y_axis = list(), list()
     for d in data:
@@ -237,8 +272,8 @@ def plot_department_employee_count_over_years(limit=10):
     plt.show()
 
 
-def plot_designation_employee_count_over_years(limit=10):
-    data = analyze.designation_employee_count_over_years(limit=limit)
+def plot_authority_employee_count_over_years(limit=10):
+    data = analyze.authority_employee_count_over_years(limit=limit)
 
     x_axis, y_axis_2016, y_axis_2017, y_axis_2018 = list(), list(), list(), list()
     for d in data:
