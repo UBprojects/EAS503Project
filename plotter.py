@@ -170,6 +170,36 @@ def plot_department_part_full_time(limit=10):
     plt.show()
 
 
+def plot_designation_avg_salary(limit=10):
+    data = analyze.designation_avg_salary(limit=limit)
+
+    x_axis, y_axis = list(), list()
+    for d in data:
+        x_axis.append(d[0])
+        y_axis.append(d[1] if d[1] else 0)
+
+    n_groups = len(x_axis)
+    plt.subplots(figsize=PLOT_FIGSIZE)
+    plt.xticks(rotation=PLOT_ROTATION)
+    index = np.arange(n_groups)
+    bar_width = 0.35
+    opacity = 0.8
+
+    plt.bar(index, y_axis, bar_width,
+            alpha=opacity,
+            color='r',
+            label='Average Salary')
+
+    plt.xlabel('Designations')
+    plt.ylabel('Salary amount')
+    plt.title('Average salary for designations')
+    plt.xticks(index + bar_width, x_axis)
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show()
+
+
 def plot_authority_avg_salary(limit=10):
     data = analyze.authority_avg_salary(limit=limit)
 
@@ -265,6 +295,48 @@ def plot_department_employee_count_over_years(limit=10):
     plt.xlabel('Year')
     plt.ylabel('# of employees')
     plt.title('# of employees in department for past 3 years')
+    plt.xticks(index + bar_width, x_axis)
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_designation_employee_count_over_years(limit=10):
+    data = analyze.designation_employee_count_over_years(limit=limit)
+
+    x_axis, y_axis_2016, y_axis_2017, y_axis_2018 = list(), list(), list(), list()
+    for d in data:
+        x_axis.append(d[0])
+        y_axis_2016.append(d[1] if d[1] else 0)
+        y_axis_2017.append(d[2] if d[2] else 0)
+        y_axis_2018.append(d[3] if d[3] else 0)
+
+    n_groups = len(x_axis)
+    plt.subplots(figsize=PLOT_FIGSIZE)
+    plt.xticks(rotation=PLOT_ROTATION)
+    index = np.arange(n_groups)
+    bar_width = 0.35
+    opacity = 0.8
+
+    plt.bar(index, y_axis_2016, bar_width,
+            alpha=opacity,
+            color='b',
+            label='2016')
+
+    plt.bar(index + bar_width, y_axis_2017, bar_width,
+            alpha=opacity,
+            color='g',
+            label='2017')
+
+    plt.bar(index + (bar_width * 2), y_axis_2018, bar_width,
+            alpha=opacity,
+            color='r',
+            label='2018')
+
+    plt.xlabel('Year')
+    plt.ylabel('# of employees')
+    plt.title('# of employees in designations for past 3 years')
     plt.xticks(index + bar_width, x_axis)
     plt.legend()
 

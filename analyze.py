@@ -107,6 +107,24 @@ def department_employees_full_part_time(limit=10):
     return data
 
 
+def designation_avg_salary(limit=10):
+    query = """SELECT
+                    d.title, (AVG(base_annualized_salary)) as avg_salary
+                FROM
+                    Person p
+                    JOIN Designation d ON d.id = p.designation_id
+                GROUP BY
+                    p.designation_id
+                ORDER BY
+                    avg_salary DESC
+                LIMIT {limit};""".format(limit=limit)
+
+    db_conn = db_helper.create_db_connection()
+    data = db_helper.fetch_data(db_conn, query)
+    db_conn.close()
+    return data
+
+
 def authority_avg_salary(limit=10):
     query = """SELECT
                     a.title, (AVG(base_annualized_salary)) as avg_salary
@@ -164,6 +182,27 @@ def department_employee_count_over_years(limit=10):
     return data
 
 
+def designation_employee_count_over_years(limit=10):
+    query = """SELECT
+                    d.title, 
+                    sum(case when strftime('%Y', fiscal_year_end_date) = '2016' then 1 else 0 end) as year_2016,
+                    sum(case when strftime('%Y', fiscal_year_end_date) = '2017' then 1 else 0 end) as year_2017,
+                    sum(case when strftime('%Y', fiscal_year_end_date) = '2018' then 1 else 0 end) as year_2018
+                FROM
+                    Person p
+                    JOIN Designation d ON d.id = p.designation_id
+                GROUP BY
+                    p.designation_id
+                ORDER BY
+                    year_2016 DESC, year_2017 DESC, year_2018 DESC
+                LIMIT {limit};""".format(limit=limit)
+
+    db_conn = db_helper.create_db_connection()
+    data = db_helper.fetch_data(db_conn, query)
+    db_conn.close()
+    return data
+
+
 def authority_employee_count_over_years(limit=10):
     query = """SELECT
                     a.title, 
@@ -174,7 +213,7 @@ def authority_employee_count_over_years(limit=10):
                     Person p
                     JOIN Authority a ON a.id = p.authority_id
                 GROUP BY
-                    a.id
+                    p.authority_id
                 ORDER BY
                     year_2016 DESC, year_2017 DESC, year_2018 DESC
                 LIMIT {limit};""".format(limit=limit)
