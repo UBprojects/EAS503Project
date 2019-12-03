@@ -455,3 +455,26 @@ def plot_designation_employees_pie_chart(limit=10):
     ax1.axis('equal')
     plt.tight_layout()
     plt.show()
+
+
+def plot_authority_total_compensation(limit=10, year=2018):
+    data = analyze.authority_total_compensation(limit=limit, year=year)
+
+    x_axis, y_axis = list(), list()
+    for d in data:
+        x_axis.append(d[0])
+        y_axis.append(d[1] if d[1] else 0)
+
+    # Pie chart
+    fig1, ax1 = plt.subplots(figsize=PLOT_FIGSIZE)
+    ax1.pie(y_axis, labels=x_axis, autopct='%1.1f%%', shadow=True, startangle=90)
+
+    # draw circle
+    centre_circle = plt.Circle((0, 0), 0.70, fc='white')
+    fig = plt.gcf()
+    fig.gca().add_artist(centre_circle)
+
+    # Equal aspect ratio ensures that pie is drawn as a circle
+    ax1.axis('equal')
+    plt.tight_layout()
+    plt.show()

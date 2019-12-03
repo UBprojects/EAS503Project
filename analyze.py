@@ -284,3 +284,24 @@ def department_num_employees(limit=10):
     data = db_helper.fetch_data(db_conn, query)
     db_conn.close()
     return data
+
+
+def authority_total_compensation(limit=10, year=2108):
+    query = """SELECT
+                    a.title,
+                    sum(p.total_compensation) AS total_compensation
+                FROM
+                    Person p
+                    JOIN Authority a ON a.id = p.authority_id
+                WHERE
+                    strftime ('%Y', fiscal_year_end_date) = '{year}'
+                GROUP BY
+                    a.title
+                ORDER BY
+                    total_compensation DESC
+                LIMIT {limit};""".format(limit=limit, year=year)
+
+    db_conn = db_helper.create_db_connection()
+    data = db_helper.fetch_data(db_conn, query)
+    db_conn.close()
+    return data
