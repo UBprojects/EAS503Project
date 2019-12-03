@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 
 import analyze
+from helpers import common
 
 PLOT_FIGSIZE = (15, 10)
 PLOT_ROTATION = 45
@@ -478,3 +480,16 @@ def plot_authority_total_compensation(limit=10, year=2018):
     ax1.axis('equal')
     plt.tight_layout()
     plt.show()
+
+
+def plot_authority_total_employees_heatmap(limit=10, year=2018, sort_by='ASC', chunks=2):
+    data = analyze.authority_total_employees(limit=limit, year=year, sort_by=sort_by)
+    x_axis, y_axis = list(), list()
+    for d in data:
+        x_axis.append(d[0].title())
+        y_axis.append(d[1])
+
+    data = np.array(list(common.divide_chunks(y_axis, chunks)))
+    labels = np.array(list(common.divide_chunks(x_axis, chunks)))
+    plt.subplots(figsize=PLOT_FIGSIZE)
+    sns.heatmap(data, annot=labels, fmt='')
