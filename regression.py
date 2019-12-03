@@ -75,6 +75,3 @@ def run_regression(filename='datafile.csv'):
     mean_abs_error = metrics.mean_absolute_error(y_test, y_pred_rf)
     rsquared_score = r2_score(y_test, y_pred_rf)
     return df_results_rf, mean_abs_error, rsquared_score
-
-    print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, y_pred_rf))
-    print('R-Sqaure Value:', r2_score(y_test, y_pred_rf))
