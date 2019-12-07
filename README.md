@@ -9,12 +9,13 @@ Then follow these steps:-
 2) Type `. venv/bin/activate`
 3) Type `pip install -r requirements.txt`
 4) Type `jupyter notebook`
-5) Done! This will open a tab in your browser where you can run your **project_notebook.ipynb**.
+5) Click on `project_notebook.ipynb`
+6) Done!
 
 
 Whenever you want to run the project in future, just go to your working directory using command line and type 
 
-1) `. venv/bin/activate`
+1)  `. venv/bin/activate`
 2)  `jupyter notebook`
 
 to start working on your virtual environment again. 
