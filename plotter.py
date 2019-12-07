@@ -42,7 +42,11 @@ def plot_designation_pay(limit=10):
     data = analyze.designation_pays_most_and_least(limit=limit)
     x_axis, ymax_axis, ymin_axis = list(), list(), list()
     for d in data:
-        x_axis.append(d[0].title())
+        title = d[0].title()
+        title = ",".join(title.split(",")[:2])
+        title = " ".join(title.split(" ")[:3])
+
+        x_axis.append(title)
         ymax_axis.append(d[1])
         ymin_axis.append(d[2])
 
